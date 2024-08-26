@@ -71,11 +71,11 @@ class Crawler:
 
         request_url = requests.get(entire_url, headers=header).url
                 
-        pattern1 = re.compile("(?<=word).+?(?=&\\b)")
-        temp = unquote(pattern1.findall(request_url)[0])
+        pattern1 = re.compile("(?<=word).+?(?=&\\b)")       # 正则表达式匹配文本
+        temp = unquote(pattern1.findall(request_url)[0])    # 解码
 
-        pattern2 = re.compile("(?<==).+")
-        word = unquote(pattern2.findall(temp)[0])
+        pattern2 = re.compile("(?<==).+")                   # 二次匹配
+        word = unquote(pattern2.findall(temp)[0])           # 最终转成中文语句
 
         return word
 
@@ -95,7 +95,6 @@ class Crawler:
         imgs_data: list = response.json()['data']        
 
         L_url: list = []
-
         for data in imgs_data:
             if 'hoverURL' in data:
                 img_url = data['hoverURL']          # 每个data元素中拿到hoverURL的值
@@ -113,7 +112,6 @@ class Crawler:
         pattern = re.compile(".+(?=\\.jpg)")    # 正则表达式前瞻 (?=...)
     
         images_num: list = []
-
         for elem in images:
             l = pattern.findall(elem)
             images_num.append(int(l[0]))
@@ -191,7 +189,7 @@ class Crawler:
     # 用于打包成exe的方法
 
     def singlePage_download_p(self) -> None:
-        print("\033[35m请先准备好一个空文件夹\033[0m")
+        print("\033[35m【请先准备好一个空文件夹】\033[0m")
         # 配置参数
         Entire_url = input("\033[34m请输入百度图片搜索网址:\033[0m")
         directory_path = input("\033[34m请输入本地文件夹路径(注意最后的\\)【如D:\\image\】:\033[0m")
@@ -210,7 +208,7 @@ class Crawler:
       
 
     def multiplePage_download_p(self) -> None:
-        print("\033[35m请先准备好一个空文件夹\033[0m")
+        print("\033[35m【请先准备好一个空文件夹】\033[0m")
         # 配置参数
         Entire_url = input("\033[34m请输入百度图片搜索网址:\033[0m")
         directory_path = input("\033[34m请输入本地文件夹路径(注意最后的\\)【如D:\\image\】:\033[0m")
