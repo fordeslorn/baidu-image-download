@@ -50,6 +50,8 @@ class Crawler:
     default_url = "https://image.baidu.com/search/acjson"
 
  
+########################################################################################################
+
     # 获取网页的logid
     def get_logid(self, entire_url: str) -> int:  
         header = self.set_ua()
@@ -144,6 +146,7 @@ class Crawler:
         else: 
             print("\033[34m非法输入,已退出\033[0m")
 
+
 ########################################################################################################
 
     # 单页抓取方法        参数为:   本地文件夹路径       百度图片网页链接    第几页
@@ -156,6 +159,8 @@ class Crawler:
         self.params['pn'] = 30*page
         # 通过参数以及百度图片网页url获取图片列表
         L_url: list = self.get_url_list(self.default_url)
+
+        print(f"\033[34m本次抓取到{len(L_url)}张图片\033[0m")
         self.download_images(L_url, directory_path)
       
 
@@ -181,12 +186,65 @@ class Crawler:
         print(f"\033[34m本次抓取到{len(final_url)}张图片\033[0m")
         self.download_images(final_url, directory_path)
 
+########################################################################################################
+
+    # 用于打包成exe的方法
+
+    def singlePage_download_p(self) -> None:
+        print("\033[35m请先准备好一个空文件夹\033[0m")
+        # 配置参数
+        Entire_url = input("\033[34m请输入百度图片搜索网址:\033[0m")
+        directory_path = input("\033[34m请输入本地文件夹路径(注意最后的\\)【如D:\\image\】:\033[0m")
+        page = int(input("\033[34m请输入下载的单页:\033[0m"))
+
+        word = self.get_word(Entire_url)
+        self.params['word'] = word
+        self.params['queryWord'] = word
+        self.params['logid'] = self.get_logid(Entire_url)
+        self.params['pn'] = 30*page
+        # 通过参数以及百度图片网页url获取图片列表
+        L_url: list = self.get_url_list(self.default_url)
+
+        print(f"\033[34m本次抓取到{len(L_url)}张图片\033[0m")
+        self.download_images(L_url, directory_path)
+      
+
+    def multiplePage_download_p(self) -> None:
+        print("\033[35m请先准备好一个空文件夹\033[0m")
+        # 配置参数
+        Entire_url = input("\033[34m请输入百度图片搜索网址:\033[0m")
+        directory_path = input("\033[34m请输入本地文件夹路径(注意最后的\\)【如D:\\image\】:\033[0m")
+        total_page = int(input("\033[34m请输入要下载的总页数:\033[0m"))
+
+        word = self.get_word(Entire_url)
+        self.params['word'] = word
+        self.params['queryWord'] = word
+        self.params['logid'] = self.get_logid(Entire_url)
+
+        total_url: list = []
+        for page in range(1, total_page+1): # 获取所有页的url    
+            self.params['pn'] = 30*page         # 翻页
+            L_url: list = self.get_url_list(self.default_url)   # 更新L_url
+            total_url += L_url              
+
+        final_url: list = []    
+        for url in total_url: # 过滤相同的url并得到最终的列表
+            if url not in final_url:
+                final_url.append(url)
+
+        print(f"\033[34m本次抓取到{len(final_url)}张图片\033[0m")
+        self.download_images(final_url, directory_path)
+ 
+
 
 if __name__ == '__main__':
 
-    url = "https://image.baidu.com/search/index?tn=baiduimage&ipn=r&ct=201326592&cl=2&lm=-1&st=-1&fm=result&fr=&sf=1&fmq=1724431602480_R&pv=&ic=&nc=1&z=&hd=&latest=&copyright=&se=1&showtab=0&fb=0&width=&height=&face=0&istype=2&dyTabStr=MCwzLDEsMiwxMyw3LDYsNSwxMiw5&ie=utf-8&sid=&word=%E5%92%8C%E6%B3%89%E5%A6%83%E7%88%B1"
+    # test_url = "https://image.baidu.com/search/index?tn=baiduimage&ipn=r&ct=201326592&cl=2&lm=-1&st=-1&fm=result&fr=&sf=1&fmq=1724596676270_R&pv=&ic=&nc=1&z=&hd=&latest=&copyright=&se=1&showtab=0&fb=0&width=&height=&face=0&istype=2&dyTabStr=MCwzLDEsMiwxMyw3LDYsNSwxMiw5&ie=utf-8&sid=&word=%E7%88%B1%E8%8E%89%E5%B8%8C%E9%9B%85"
 
- 
+    c1 = Crawler()
+
+    c1.multiplePage_download_p()
+
 
 
 # for i, url in enumerate(L_url,1):
