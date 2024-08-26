@@ -87,6 +87,14 @@ class Crawler:
         header = {"user-agent": ua_t}       # 配置UA并设置为随机
         return header
 
+    # 检查文件夹是否存在
+    def check_folder(self, directory_path: str) -> bool:
+        if not os.path.exists(directory_path):
+            print("\033[31m文件夹不存在!\033[0m")
+            return False
+        else:
+            return True 
+
 
     def get_url_list(self, URL: str) -> list:
         header = self.set_ua()       # 配置ua
@@ -107,6 +115,14 @@ class Crawler:
 
     # 该方法给download_images方法使用
     def __get_last_image_name(self, directory_path) -> int:     # 获取文件夹中最后一张图片的名字数字，以便追加写入
+        
+        if self.check_folder(directory_path) == True:
+            pass
+        else: 
+            os.makedirs(directory_path)
+            print("\033[34m已自动创建该文件夹\033[0m")
+
+        
         images: list = os.listdir(directory_path)
 
         pattern = re.compile(".+(?=\\.jpg)")    # 正则表达式前瞻 (?=...)
@@ -205,6 +221,7 @@ class Crawler:
 
         print(f"\033[34m本次抓取到{len(L_url)}张图片\033[0m")
         self.download_images(L_url, directory_path)
+        input("\033[34m按Enter键退出...\033[0m")
       
 
     def multiplePage_download_p(self) -> None:
@@ -232,7 +249,7 @@ class Crawler:
 
         print(f"\033[34m本次抓取到{len(final_url)}张图片\033[0m")
         self.download_images(final_url, directory_path)
- 
+        input("\033[34m按Enter键退出...\033[0m")
 
 
 if __name__ == '__main__':
